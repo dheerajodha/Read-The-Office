@@ -1,4 +1,4 @@
-package com.springboot.rest.example.student;
+package com.springboot.rest.example.controller;
 
 import java.net.URI;
 import java.util.List;
@@ -15,8 +15,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.springboot.rest.example.exception.StudentNotFoundException;
+import com.springboot.rest.example.model.Student;
+import com.springboot.rest.example.repository.StudentRepository;
+
 @RestController
-public class StudentResource {
+public class StudentController {
 
 	@Autowired
 	private StudentRepository studentRepository;

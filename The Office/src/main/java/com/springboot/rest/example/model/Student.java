@@ -1,13 +1,14 @@
-package com.springboot.rest.example.student;
+package com.springboot.rest.example.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
 public class Student {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String studentName;
 	private String passportNumber;

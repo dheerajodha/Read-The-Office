@@ -1,4 +1,4 @@
-package com.springboot.rest.example.student;
+package com.springboot.rest.example.controller;
 
 import java.util.List;
 
@@ -19,21 +19,26 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.springboot.rest.example.CSV.CSVHelper;
+import com.springboot.rest.example.CSV.CSVServiceForStudent;
+import com.springboot.rest.example.exception.ResponseMessage;
+import com.springboot.rest.example.model.Student;
+
 @CrossOrigin("http://localhost:8080")
 @Controller
 @RequestMapping("/api/csv")
-public class CSVController {
+public class CSVControllerForStudent {
 
   @Autowired
-  CSVService fileService;
-
-  @PostMapping("/upload")
-  public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file) {
+  CSVServiceForStudent studentService;
+  
+  @PostMapping("/students/upload")
+  public ResponseEntity<ResponseMessage> uploadStudentsFile(@RequestParam("file") MultipartFile file) {
     String message = "";
 
     if (CSVHelper.hasCSVFormat(file)) {
       try {
-        fileService.save(file);
+    	  studentService.save(file);
 
         message = "Uploaded the file successfully: " + file.getOriginalFilename();
         
@@ -52,25 +57,25 @@ public class CSVController {
     message = "Please upload a csv file!";
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message,""));
   }
-
+  
   @GetMapping("/students")
   public ResponseEntity<List<Student>> getAllStudents() {
     try {
-      List<Student> tutorials = fileService.getAllStudents();
+      List<Student> students = studentService.getAllStudents();
 
-      if (tutorials.isEmpty()) {
+      if (students.isEmpty()) {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
       }
 
-      return new ResponseEntity<>(tutorials, HttpStatus.OK);
+      return new ResponseEntity<>(students, HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-
-  @GetMapping("/download/{fileName:.+}")
-  public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) {
-    InputStreamResource file = new InputStreamResource(fileService.load());
+  
+  @GetMapping("/student/download/{fileName:.+}")
+  public ResponseEntity<Resource> downloadQuotesFile(@PathVariable String fileName) {
+    InputStreamResource file = new InputStreamResource(studentService.load());
 
     return ResponseEntity.ok()
         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName)
